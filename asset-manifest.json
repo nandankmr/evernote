@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/evernote/static/css/main.1be67a60.chunk.css",
-    "main.js": "/evernote/static/js/main.347a6990.chunk.js",
-    "main.js.map": "/evernote/static/js/main.347a6990.chunk.js.map",
+    "main.js": "/evernote/static/js/main.8427983b.chunk.js",
+    "main.js.map": "/evernote/static/js/main.8427983b.chunk.js.map",
     "runtime-main.js": "/evernote/static/js/runtime-main.1508f1a2.js",
     "runtime-main.js.map": "/evernote/static/js/runtime-main.1508f1a2.js.map",
     "static/js/2.c3a3d40c.chunk.js": "/evernote/static/js/2.c3a3d40c.chunk.js",
     "static/js/2.c3a3d40c.chunk.js.map": "/evernote/static/js/2.c3a3d40c.chunk.js.map",
     "index.html": "/evernote/index.html",
-    "precache-manifest.8e17559eb871cdb457feb7a589544d1c.js": "/evernote/precache-manifest.8e17559eb871cdb457feb7a589544d1c.js",
+    "precache-manifest.c4658bfa95d44ce5fdbe1f1d94a88035.js": "/evernote/precache-manifest.c4658bfa95d44ce5fdbe1f1d94a88035.js",
     "service-worker.js": "/evernote/service-worker.js",
     "static/css/main.1be67a60.chunk.css.map": "/evernote/static/css/main.1be67a60.chunk.css.map",
     "static/js/2.c3a3d40c.chunk.js.LICENSE": "/evernote/static/js/2.c3a3d40c.chunk.js.LICENSE"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.1508f1a2.js",
     "static/js/2.c3a3d40c.chunk.js",
     "static/css/main.1be67a60.chunk.css",
-    "static/js/main.347a6990.chunk.js"
+    "static/js/main.8427983b.chunk.js"
   ]
 }
