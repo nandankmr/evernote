@@ -26,6 +26,7 @@ class SidebarComponent extends React.Component {
         {this.state.addingNote ? (
           <div>
             <input
+            autoFocus
               type="text"
               className={classes.newNoteInput}
               placeholder="Enter note title"

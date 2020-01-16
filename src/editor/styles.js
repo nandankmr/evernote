@@ -1,7 +1,7 @@
 const styles = theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    height: "calc(100% - 35px)",
+    height: "calc(100vh - 35px)",
     position: "absolute",
     left: "0",
     width: "600px",
@@ -27,7 +27,7 @@ const styles = theme => ({
     height: "10"
   },
   editorContainer: {
-    height: "100%",
+    height: "70vh",
     boxSizing: "border-box"
   }
 });
