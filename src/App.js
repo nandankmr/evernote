@@ -11,24 +11,24 @@ class App extends React.Component {
       selectedNoteIndex: null,
       selectedNote: null,
       notes: [
-        // {
-        //   id:'1',
-        //   title: "Welcome to Notebook",
-        //   body:
-        //     "<h1>Welcome to your personal Notebook!</h1><h2>Steps for creating a note:</h2><ol><li><strong>click 'New notes' button on the top left</strong></li><li><strong>Enter note title</strong></li><li><strong>click 'Submit Note'</strong></li><li><strong>Congrats! You have created your note...</strong></li></ol><br/><h2>Start writing in the text area on the right side.</h2><h2>To delete a note, click on the delete icon of the note.</h2>"
-        // },
-        // {
-        //   id:'2',
-        //   title: "About",
-        //   body:
-        //     "<h1>About this App:</h><h2>\tThis is a web app that can be used to create notes.</h2><h2>\tEach note has a title and a body. Currently, new notes are stored in RAM because this app is not connected to a database to store the notes. </h2><p><br></p><h2><br></h2><h2>\tTechnologies used:</h2><ul><li><strong>HTML</strong></li><li><strong>CSS</strong></li><li><strong>React JS (A front end JavaScript framework)</strong></li><li><strong>Visual Studio Code (For coding)</strong></li><li><strong>Google Chrome (For testing)</strong></li></ul><br><br></p><h2>Suggested browser:- Google Chrome</h2><br><h3><strong><em><u>Disclaime</u>r:-  </em>This web app is not responsive. Use it on desktop only.</strong></h3>"
-        // },
-        // {
-        //   id:'3',
-        //   title: "Contact",
-        //   body:
-        //     "<h1>Get in Touch:</h1><p><br></p><h2>\tEmail:Nandankmrjha@gmail.com</h2>"
-        // }
+        {
+          id: "1",
+          title: "Welcome to Notebook",
+          body:
+            "<h1>Welcome to your personal Notebook!</h1><h2>Steps for creating a note:</h2><ol><li><strong>click 'New notes' button on the top left</strong></li><li><strong>Enter note title</strong></li><li><strong>click 'Submit Note'</strong></li><li><strong>Congrats! You have created your note...</strong></li></ol><br/><h2>Start writing in the text area on the right side.</h2><h2>To delete a note, click on the delete icon of the note.</h2>"
+        },
+        {
+          id: "2",
+          title: "About",
+          body:
+            "<h1>About this App:</h><h2>\tThis is a web app that can be used to create notes.</h2><h2>\tEach note has a title and a body. Currently, new notes are stored in RAM because this app is not connected to a database to store the notes. </h2><p><br></p><h2><br></h2><h2>\tTechnologies used:</h2><ul><li><strong>HTML</strong></li><li><strong>CSS</strong></li><li><strong>React JS (A front end JavaScript framework)</strong></li><li><strong>Visual Studio Code (For coding)</strong></li><li><strong>Google Chrome (For testing)</strong></li></ul><br><br></p><h2>Suggested browser:- Google Chrome</h2><br><h3><strong><em><u>Disclaime</u>r:-  </em>This web app is not responsive. Use it on desktop only.</strong></h3>"
+        },
+        {
+          id: "3",
+          title: "Contact",
+          body:
+            "<h1>Get in Touch:</h1><p><br></p><h2>\tEmail:Nandankmrjha@gmail.com</h2>"
+        }
       ]
     };
   }
@@ -141,15 +141,15 @@ class App extends React.Component {
       timeStamp: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    firebase
+    const newFromDB = await firebase
       .firestore()
       .collection("notes")
       .add(note);
-
-    this.selectNote(
-      this.state.notes[this.state.notes.length - 1],
-      this.state.notes.length - 1
+    await this.setState({ notes: [...this.state.notes, note] });
+    const newNoteIndex = this.state.notes.indexOf(
+      this.state.notes.filter(n => n.id === newFromDB.id)[0]
     );
+    this.setState({selectedNote:this.state.notes[newNoteIndex], selectedNoteIndex:newNoteIndex})
   };
 
   selectNote = (n, i) => {
