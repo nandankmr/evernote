@@ -2,6 +2,7 @@ import React from "react";
 import Sidebar from "./sidebar/sidebar";
 import EditorComponent from "./editor/editor";
 import "./App.css";
+const firebase = require("firebase");
 
 class App extends React.Component {
   constructor() {
@@ -10,32 +11,56 @@ class App extends React.Component {
       selectedNoteIndex: null,
       selectedNote: null,
       notes: [
-        {
-          title: "Welcome to Notebook",
-          body:
-          "<h1>Welcome to your personal Notebook!</h1><h2>Steps for creating a note:</h2><ol><li><strong>click 'New notes' button on the top left</strong></li><li><strong>Enter note title</strong></li><li><strong>click 'Submit Note'</strong></li><li><strong>Congrats! You have created your note...</strong></li></ol><br/><h2>Start writing in the text area on the right side.</h2><h2>To delete a note, click on the delete icon of the note.</h2>"
-        },
-        {
-          title: "About",
-          body:
-            "<h1>About this App:</h><h2>\tThis is a web app that can be used to create notes.</h2><h2>\tEach note has a title and a body. Currently, new notes are stored in RAM because this app is not connected to a database to store the notes. </h2><p><br></p><h2><br></h2><h2>\tTechnologies used:</h2><ul><li><strong>HTML</strong></li><li><strong>CSS</strong></li><li><strong>React JS (A front end JavaScript framework)</strong></li><li><strong>Visual Studio Code (For coding)</strong></li><li><strong>Google Chrome (For testing)</strong></li></ul><br><br></p><h2>Suggested browser:- Google Chrome</h2><br><h3><strong><em><u>Disclaime</u>r:-  </em>This web app is not responsive. Use it on desktop only.</strong></h3>"
-        },
-        {
-          title:'Contact',
-          body:"<h1>Get in Touch:</h1><p><br></p><h2>\tEmail:Nandankmrjha@gmail.com</h2>"
-        }
+        // {
+        //   id:'1',
+        //   title: "Welcome to Notebook",
+        //   body:
+        //     "<h1>Welcome to your personal Notebook!</h1><h2>Steps for creating a note:</h2><ol><li><strong>click 'New notes' button on the top left</strong></li><li><strong>Enter note title</strong></li><li><strong>click 'Submit Note'</strong></li><li><strong>Congrats! You have created your note...</strong></li></ol><br/><h2>Start writing in the text area on the right side.</h2><h2>To delete a note, click on the delete icon of the note.</h2>"
+        // },
+        // {
+        //   id:'2',
+        //   title: "About",
+        //   body:
+        //     "<h1>About this App:</h><h2>\tThis is a web app that can be used to create notes.</h2><h2>\tEach note has a title and a body. Currently, new notes are stored in RAM because this app is not connected to a database to store the notes. </h2><p><br></p><h2><br></h2><h2>\tTechnologies used:</h2><ul><li><strong>HTML</strong></li><li><strong>CSS</strong></li><li><strong>React JS (A front end JavaScript framework)</strong></li><li><strong>Visual Studio Code (For coding)</strong></li><li><strong>Google Chrome (For testing)</strong></li></ul><br><br></p><h2>Suggested browser:- Google Chrome</h2><br><h3><strong><em><u>Disclaime</u>r:-  </em>This web app is not responsive. Use it on desktop only.</strong></h3>"
+        // },
+        // {
+        //   id:'3',
+        //   title: "Contact",
+        //   body:
+        //     "<h1>Get in Touch:</h1><p><br></p><h2>\tEmail:Nandankmrjha@gmail.com</h2>"
+        // }
       ]
     };
   }
 
   componentDidMount = () => {
-    const { notes } = this.state;
-    console.log(notes);
-    if (notes.length > 0 && !this.state.selectedNote)
-      this.setState({
-        selectedNote: notes[0],
-        selectedNoteIndex: 0
+    firebase
+      .firestore()
+      .collection("notes")
+      .onSnapshot(serverUpdate => {
+        const notes = serverUpdate.docs.map(doc => {
+          const data = doc.data();
+          data["id"] = doc.id;
+          return data;
+        });
+
+        this.setState({ notes });
+
+        console.log(notes);
+        if (notes.length > 0 && !this.state.selectedNote)
+          this.setState({
+            selectedNote: notes[notes.length - 1],
+            selectedNoteIndex: notes.length - 1
+          });
       });
+    // const { notes } = this.state;
+    // firebase.firestore().collection('notes').map
+    // console.log(notes);
+    // if (notes.length > 0 && !this.state.selectedNote)
+    //   this.setState({
+    //     selectedNote: notes[0],
+    //     selectedNoteIndex: 0
+    //   });
   };
 
   render() {
@@ -55,11 +80,10 @@ class App extends React.Component {
           <EditorComponent
             selectedNote={this.state.selectedNote}
             selectedNoteIndex={this.state.selectedNoteIndex}
-            updateBody={this.updateBody}
-            updateTitle={this.updateTitle}
+            updateValue={this.updateValue}
           />
         ) : (
-          <h1 style={{ textAlign: "center", margin: "0", color: "#333" }}>
+          <h1 style={{ textAlign: "center", margin: "0", color: "#444" }}>
             Create a New Note to see the Contents
           </h1>
         )}
@@ -80,13 +104,12 @@ class App extends React.Component {
     transform: "scaleX(1.5)"
   };
 
-  updateTitle = title => {
-    this.setState({
-      notes: this.state.notes.map((note, index) => {
-        if (index === this.state.selectedNoteIndex) note.title = title;
-        return note;
-      })
-    });
+  updateValue = (title, body) => {
+    firebase
+      .firestore()
+      .collection("notes")
+      .doc(this.state.selectedNote.id)
+      .update({ title, body });
   };
   deleteNote = async (note, index) => {
     if (index === this.state.selectedNoteIndex)
@@ -99,10 +122,11 @@ class App extends React.Component {
       });
     }
 
-    await this.setState({
-      notes: this.state.notes.filter((n, i) => i !== index)
-    });
-
+    firebase
+      .firestore()
+      .collection("notes")
+      .doc(note.id)
+      .delete();
     if (this.state.notes.length > 0 && !this.state.selectedNote)
       this.setState({
         selectedNote: this.state.notes[this.state.notes.length - 1],
@@ -110,22 +134,17 @@ class App extends React.Component {
       });
   };
 
-  updateBody = body => {
-    this.setState({
-      notes: this.state.notes.map((note, index) => {
-        if (index === this.state.selectedNoteIndex) note.body = body;
-        return note;
-      })
-    });
-  };
-
   newNote = async title => {
     const note = {
       title,
-      body: ""
+      body: "",
+      timeStamp: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    await this.setState({ notes: [...this.state.notes, note] });
+    firebase
+      .firestore()
+      .collection("notes")
+      .add(note);
 
     this.selectNote(
       this.state.notes[this.state.notes.length - 1],
@@ -138,5 +157,3 @@ class App extends React.Component {
   };
 }
 export default App;
-
-
