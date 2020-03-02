@@ -12,19 +12,19 @@ class App extends React.Component {
       selectedNote: null,
       notes: [
         {
-          id: "1",
+          id: "zmB8ENo9OcNjg748qpcO",
           title: "Welcome to Notebook",
           body:
-            "<h1>Welcome to your personal Notebook!</h1><h2>Steps for creating a note:</h2><ol><li><strong>click 'New notes' button on the top left</strong></li><li><strong>Enter note title</strong></li><li><strong>click 'Submit Note'</strong></li><li><strong>Congrats! You have created your note...</strong></li></ol><br/><h2>Start writing in the text area on the right side.</h2><h2>To delete a note, click on the delete icon of the note.</h2>"
+            "<h1>Welcome to your personal Notebook!</h1><h2>Steps for creating a note:</h2><ol><li><strong>click 'New notes' button on the top left</strong></li><li><strong>Enter note title</strong></li><li><strong>click 'Submit Note'</strong></li><li><strong>Congrats! You have created your note...</strong></li></ol><h2>Start writing in the text area on the right side.</h2><h2>To delete a note, click on the delete icon of the note.</h2><p><br></p><h>Connect to the internet for database support.</h>"
         },
         {
-          id: "2",
+          id: "VrMDsZufG4iCCi69UaDJ",
           title: "About",
           body:
             "<h1>About this App:</h><h2>\tThis is a web app that can be used to create notes.</h2><h2>\tEach note has a title and a body. Currently, new notes are stored in RAM because this app is not connected to a database to store the notes. </h2><p><br></p><h2><br></h2><h2>\tTechnologies used:</h2><ul><li><strong>HTML</strong></li><li><strong>CSS</strong></li><li><strong>React JS (A front end JavaScript framework)</strong></li><li><strong>Visual Studio Code (For coding)</strong></li><li><strong>Google Chrome (For testing)</strong></li></ul><br><br></p><h2>Suggested browser:- Google Chrome</h2><br><h3><strong><em><u>Disclaime</u>r:-  </em>This web app is not responsive. Use it on desktop only.</strong></h3>"
         },
         {
-          id: "3",
+          id: "ADRhJ02nqcRExrqptQ9l",
           title: "Contact",
           body:
             "<h1>Get in Touch:</h1><p><br></p><h2>\tEmail:Nandankmrjha@gmail.com</h2>"
@@ -43,24 +43,15 @@ class App extends React.Component {
           data["id"] = doc.id;
           return data;
         });
+        if (notes.length > 0) this.setState({ notes });
 
-        this.setState({ notes });
-
-        console.log(notes);
-        if (notes.length > 0 && !this.state.selectedNote)
+        console.log(this.state.notes);
+        if (this.state.notes.length > 0 && !this.state.selectedNote)
           this.setState({
             selectedNote: notes[notes.length - 1],
             selectedNoteIndex: notes.length - 1
           });
       });
-    // const { notes } = this.state;
-    // firebase.firestore().collection('notes').map
-    // console.log(notes);
-    // if (notes.length > 0 && !this.state.selectedNote)
-    //   this.setState({
-    //     selectedNote: notes[0],
-    //     selectedNoteIndex: 0
-    //   });
   };
 
   render() {
@@ -83,8 +74,8 @@ class App extends React.Component {
             updateValue={this.updateValue}
           />
         ) : (
-          <h1 style={{ textAlign: "center", margin: "0", color: "#444" }}>
-            Create a New Note to see the Contents
+          <h1 style={{ textAlign: "center", margin: "0", color: "#777" }}>
+            Create or Select a New Note to see the Contents
           </h1>
         )}
       </div>
@@ -141,15 +132,18 @@ class App extends React.Component {
       timeStamp: firebase.firestore.FieldValue.serverTimestamp()
     };
 
+    await this.setState({ notes: [...this.state.notes, note] });
     const newFromDB = await firebase
       .firestore()
       .collection("notes")
       .add(note);
-    await this.setState({ notes: [...this.state.notes, note] });
     const newNoteIndex = this.state.notes.indexOf(
       this.state.notes.filter(n => n.id === newFromDB.id)[0]
     );
-    this.setState({selectedNote:this.state.notes[newNoteIndex], selectedNoteIndex:newNoteIndex})
+    this.setState({
+      selectedNote: this.state.notes[newNoteIndex],
+      selectedNoteIndex: newNoteIndex
+    });
   };
 
   selectNote = (n, i) => {
